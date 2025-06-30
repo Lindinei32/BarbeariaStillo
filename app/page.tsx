@@ -17,6 +17,7 @@ const Home = async () => {
   const barbershops = await db.barbershop.findMany({
     include: {
       services: true,
+      
     },
     orderBy: { name: "asc" },
   });
