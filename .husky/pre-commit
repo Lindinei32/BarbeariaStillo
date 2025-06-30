@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+npm run lint-staged
+. "$(dirname -- "$0")/_/husky.sh"
+
+npm
+. "$(dirname -- "$0")/_/husky
+. "$(dirname -- "$0")/_
+. "$(dirname --
+.

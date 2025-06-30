@@ -1,0 +1,54 @@
+{
+  "extends": [
+    "next/core-web-vitals",
+    "next/typescript"
+    // Se você tivesse um plugin específico para "total-typescript", ele poderia estar aqui:
+    // "plugin:total-typescript/recommended" // Exemplo hipotético
+  ],
+  "rules": {
+    // Desabilitar no-unused-vars padrão do JS, pois @typescript-eslint/no-unused-vars é usado
+    "no-unused-vars": "off",
+
+    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
+    "@typescript-eslint/no-explicit-any": "warn",
+
+    // Regras do @typescript-eslint que podem ser relevantes ou muito rigorosas:
+    // "@typescript-eslint/ban-types": ["warn", { // Comentado pois a regra não foi encontrada, next/typescript pode já cobrir
+    //   "extendDefaults": true,
+    //   "types": {
+    //     "{}": false // Permite {} se for realmente necessário, mas geralmente é melhor evitá-lo
+    //   }
+    // }],
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    // "@typescript-eslint/no-empty-interface": "warn", // Removido pois a regra está depreciada
+    "@typescript-eslint/no-inferrable-types": "warn",
+
+    // React specific rules (geralmente já bem configuradas por "next/core-web-vitals")
+    "react/react-in-jsx-scope": "off",
+    "react/prop-types": "off"
+  },
+  "overrides": [
+    {
+      "files": ["*.json"],
+      "parser": "jsonc-eslint-parser",
+      "rules": {
+        // Nenhuma regra específica de @typescript-eslint necessária para JSON aqui.
+      }
+    },
+    {
+      "files": ["**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/*.spec.tsx"],
+      "rules": {
+        "@typescript-eslint/no-explicit-any": "off"
+      }
+    }
+  ],
+  "ignorePatterns": [
+    "node_modules/",
+    ".next/",
+    "out/",
+    "build/",
+    "dist/",
+    "package-lock.json",
+    ".vscode/settings.json"
+  ]
+}
