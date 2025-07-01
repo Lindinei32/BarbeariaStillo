@@ -10,8 +10,8 @@ const Footer = () => {
           </p>
           
           <p className="text-center text-sm text-white mt-2 font-semibold">
-          Av. Benjamin Possebon, 1041 Quissisana
-            <span> São José dos Pinhais - PR</span>
+          Av. Benjamin Possebon, 1041 Quissisana -
+            <span> São José dos Pinhais </span>
           </p>
           <p className="mt-2 text-center text-white font-semibold">
             <span>Atendimentos de Terça-feira a Sábado </span>

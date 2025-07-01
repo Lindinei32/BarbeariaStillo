@@ -242,7 +242,7 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
   return (
     <>
       <Card className="border-[#9c6a1c rounded-md border-[#9c6a1c] bg-card shadow-[1px_1px_0px_#9c6a1c,-1px_-1px_0px_#9c6a1c]">
-        <CardContent className="flex items-center gap-4 p-4">
+        <CardContent className="flex items-center gap-4 p-4 ">
           <div className="relative max-h-[110px] min-h-[110px] min-w-[110px] max-w-[110px]">
             <Image
               alt={service.name}
@@ -388,7 +388,7 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
                           <div className="flex items-center justify-between">
                             <p className="font-semibold">
                               {barbershop.name}
-                            </p>{' '}
+                            </p>
                           </div>
                         </CardContent>
                       </Card>

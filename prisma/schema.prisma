@@ -74,6 +74,9 @@ model Barbershop {
   services    BarbershopService[]
   createdAt   DateTime            @default(now())
   updatedAt   DateTime            @updatedAt
+  openingTime String?
+  closingTime String?
+
 }
 
 model BarbershopService {

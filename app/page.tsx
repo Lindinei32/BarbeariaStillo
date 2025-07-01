@@ -1,3 +1,5 @@
+// app/page.tsx
+
 import Image from "next/image";
 import Header from "./_components/ui/header";
 import { db } from "./_lib/prisma";
@@ -11,16 +13,26 @@ import ClientBookingList from "./_components/ui/client-booking-list";
 import Mediasocial from "./_components/ui/mediasocial";
 import BarbershopItem from "./_components/ui/barbershop-item";
 
+// <<< AÇÃO 1: FORÇAR RENDERIZAÇÃO DINÂMICA >>>
+// Esta linha diz ao Next.js para nunca usar cache para esta página.
+// Ela será sempre gerada com os dados mais recentes do banco a cada visita.
+export const revalidate = 0;
+
 const Home = async () => {
   const session = await getServerSession(authOptions);
 
+  // <<< AÇÃO 2: RESTAURAR A BUSCA QUE FUNCIONA, COM ORDENAÇÃO ESTÁVEL >>>
+  // Usamos findMany para trazer a lista de serviços junto (corrigindo o bug dos serviços)
+  // e ordenamos por 'createdAt' para garantir consistência.
   const barbershops = await db.barbershop.findMany({
     include: {
       services: true,
-      
     },
-    orderBy: { name: "asc" },
+    orderBy: { createdAt: 'asc' },
   });
+
+  // Pega a barbearia principal (a primeira da lista, que agora é sempre a mesma)
+  const mainBarbershop = barbershops.length > 0 ? barbershops[0] : null;
 
   const fixedPhones = ["(41) 99980-4744", "(41) 3382-7953"];
 
@@ -47,6 +59,8 @@ const Home = async () => {
           de <span>{format(new Date(), "yyyy")}</span>
         </p>
 
+        
+
         <div className="relative mt-6 h-[150px] w-full rounded-xl">
           <Image
             src="/estilo.png"
@@ -56,18 +70,33 @@ const Home = async () => {
             priority
           />
         </div>
+        {/* --- BLOCO DE HORÁRIO --- */}
+        {/* Agora ele será atualizado instantaneamente a cada recarga da página */}
+        <div className="mt-6">
+          {mainBarbershop && mainBarbershop.openingTime && mainBarbershop.closingTime && (
+            <div className="rounded-lg border border-primary bg-card p-3 text-center shadow-md">
+              <h3 className="font-bold text-white">
+                Hoje aberto das{" "}
+                <span className="font-extrabold text-primary">{mainBarbershop.openingTime}</span>{" "}
+                às{" "}
+                <span className="font-extrabold text-primary">{mainBarbershop.closingTime}</span>
+              </h3>
+            </div>
+          )}
+        </div>
 
         <ClientBookingList />
-
         
         <div className="mt-6">
           <BarbershopItem />
         </div>
 
+        {/* --- SEÇÃO DE SERVIÇOS --- */}
+        {/* O loop voltará a funcionar e os serviços reaparecerão */}
         <div className="mt-6">
-          <h2 className="mb-3 uppercase text-[#F5F5F5]]">Serviços</h2>
+          <h2 className="mb-3 uppercase text-[#F5F5F5]">Serviços</h2>
           {barbershops.map((barbershop) => (
-            <div key={barbershop.id} className="space-y-3">
+            <div key={barbershop.id} className="space-y-6">
               {barbershop.services.map((service) => (
                 <ServiceItem
                   key={service.id}
