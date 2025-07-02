@@ -7,7 +7,9 @@ import { db } from "../_lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../_lib/auth";
 
-export const clearBarbershopHours = async (barbershopId: string) => {
+export const clearBarbershopHours = async (
+  barbershopId: string
+): Promise<{ success?: boolean; error?: string }> => {
   const session = await getServerSession(authOptions);
 
   // Bloco de segurança para garantir que apenas um admin logado pode executar esta ação

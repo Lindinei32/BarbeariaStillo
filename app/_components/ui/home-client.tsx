@@ -1,8 +1,6 @@
 "use client";
 
 import useSWR from "swr";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 

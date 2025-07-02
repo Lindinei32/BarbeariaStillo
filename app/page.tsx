@@ -33,7 +33,7 @@ const Home = async () => {
   });
 
   // Pega a barbearia principal (a primeira da lista, que agora é sempre a mesma)
-  const mainBarbershop = barbershops.length > 0 ? barbershops[0] : null;
+  // const mainBarbershop = barbershops.length > 0 ? barbershops[0] : null;
 
   const fixedPhones = ["(41) 99980-4744", "(41) 3382-7953"];
 

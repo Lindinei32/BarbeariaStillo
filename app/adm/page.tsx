@@ -35,7 +35,7 @@ export default function AdmPage() {
     try {
       const data = await getAllAdminBookings()
       setBookings(data)
-    } catch (error) {
+    } catch {
       toast.error('Erro ao buscar agendamentos.')
     } finally {
       setIsLoadingBookings(false)
@@ -58,7 +58,7 @@ export default function AdmPage() {
 
       toast.dismiss(toastId)
       toast.success('Horários limpos com sucesso!')
-    } catch (error) {
+    } catch {
       toast.dismiss(toastId)
       toast.error('Falha ao limpar os horários.')
     } finally {
@@ -85,7 +85,7 @@ export default function AdmPage() {
 
         toast.dismiss(toastId)
         toast.success('Horários salvos com sucesso!')
-      } catch (error) {
+      } catch {
         toast.dismiss(toastId)
         toast.error('Falha ao salvar os horários.')
       } finally {
