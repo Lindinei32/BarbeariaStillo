@@ -60,7 +60,7 @@ export default function ClientBookingList() {
 
   }, [status, isLoading, fetchConfirmedBookings]);
 
-  // Efeito para polling
+  // Efeito para polling e atualização instantânea
   useEffect(() => {
     let intervalId: NodeJS.Timeout | null = null;
     // Inicia polling somente se autenticado E a carga inicial terminou
@@ -69,6 +69,21 @@ export default function ClientBookingList() {
       intervalId = setInterval(() => {
         fetchConfirmedBookings(false); // Busca periódica
       }, 30000); // 30 segundos
+
+      // Escuta evento global para atualização instantânea
+      const handleBookingCreated = () => {
+        fetchConfirmedBookings(false);
+      };
+      window.addEventListener("booking:created", handleBookingCreated);
+
+      // Limpeza
+      return () => {
+        if (intervalId) {
+          clearInterval(intervalId);
+          console.log("[ClientBookingList] Polling stopped.");
+        }
+        window.removeEventListener("booking:created", handleBookingCreated);
+      };
     }
     // Função de limpeza que para o intervalo
     return () => {

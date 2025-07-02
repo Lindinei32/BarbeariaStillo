@@ -12,6 +12,7 @@ import PhoneItem from "./_components/ui/phone-item";
 import ClientBookingList from "./_components/ui/client-booking-list";
 import Mediasocial from "./_components/ui/mediasocial";
 import BarbershopItem from "./_components/ui/barbershop-item";
+import HomeClient from "./_components/ui/home-client";
 
 // <<< AÇÃO 1: FORÇAR RENDERIZAÇÃO DINÂMICA >>>
 // Esta linha diz ao Next.js para nunca usar cache para esta página.
@@ -70,20 +71,8 @@ const Home = async () => {
             priority
           />
         </div>
-        {/* --- BLOCO DE HORÁRIO --- */}
-        {/* Agora ele será atualizado instantaneamente a cada recarga da página */}
-        <div className="mt-6">
-          {mainBarbershop && mainBarbershop.openingTime && mainBarbershop.closingTime && (
-            <div className="rounded-lg border border-primary bg-card p-3 text-center shadow-md">
-              <h3 className="font-bold text-white">
-                Hoje aberto das{" "}
-                <span className="font-extrabold text-primary">{mainBarbershop.openingTime}</span>{" "}
-                às{" "}
-                <span className="font-extrabold text-primary">{mainBarbershop.closingTime}</span>
-              </h3>
-            </div>
-          )}
-        </div>
+        {/* --- BLOCO DE HORÁRIO (DINÂMICO) --- */}
+        <HomeClient />
 
         <ClientBookingList />
         

@@ -209,6 +209,9 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
         date: bookingDate,
       })
 
+      // Dispara evento global para atualização instantânea dos agendamentos
+      window.dispatchEvent(new Event("booking:created"));
+
       handleCloseAndResetSheet()
       toast.success(
         `Reserva para ${format(bookingDate, "dd/MM 'às' HH:mm", { locale: ptBR })} realizada!`,
