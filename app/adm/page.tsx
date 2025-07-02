@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 
 // Suas importações
-import { BookingWithIncludes } from '../_components/ui/bookingCardAdmin'
+// import { BookingWithIncludes } from '../_components/ui/bookingCardAdmin'
 import Header from '../_components/ui/header'
 import BookingCardAdmin from '../_components/ui/bookingCardAdmin'
 import AdminHoursForm from '../_components/ui/admin-hours-form'
@@ -22,7 +22,7 @@ import { clearBarbershopHours } from '../_actions/clear-barbershop-hours'
 import { Barbershop } from '@prisma/client'
 
 export default function AdmPage() {
-  const [bookings, setBookings] = useState<BookingWithIncludes[]>([])
+  const [bookings, setBookings] = useState<import('../_actions/get-all-admin-bookings').BookingAdminListData[]>([])
   const [barbershop, setBarbershop] = useState<Barbershop | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isLoadingBookings, setIsLoadingBookings] = useState(true)
@@ -31,7 +31,15 @@ export default function AdmPage() {
   const router = useRouter()
 
   const fetchAndUpdateBookings = useCallback(async (isInitialLoad = false) => {
-    // ... (sua função de polling que já funciona) ...
+    if (isInitialLoad) setIsLoadingBookings(true)
+    try {
+      const data = await getAllAdminBookings()
+      setBookings(data)
+    } catch (error) {
+      toast.error('Erro ao buscar agendamentos.')
+    } finally {
+      setIsLoadingBookings(false)
+    }
   }, [])
 
   const handleClearClick = useCallback(async () => {

@@ -22,24 +22,12 @@ import { toast } from "sonner";
 import { deleteBooking } from "@/app/_actions/delete-booking";
 import { Button } from "@/app/_components/ui/button";
 
-export type BookingWithIncludes = Prisma.BookingGetPayload<{
-  include: {
-    user: true;
-    service: {
-      include: {
-        barbershop: true;
-      };
-    };
-  };
-}>;
+import type { BookingAdminListData } from "@/app/_actions/get-all-admin-bookings";
 
-// --- INTERFACE CORRIGIDA ---
 interface BookingCardAdminProps {
-  booking: BookingWithIncludes;
-  // Prefixando o nome do parâmetro com _ na definição do tipo
+  booking: BookingAdminListData;
   onBookingDeleted: (_bookingId: string) => void;
 }
-// --- FIM DA CORREÇÃO ---
 
 const formatBookingDateTime = (date: Date, formatString: string) => {
   try {
