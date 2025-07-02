@@ -10,7 +10,8 @@
     "lint": "next lint",
     "prepare": "husky && prisma generate && husky install",
     "commitmsg": "commitlint -e $GIT_EDITOR",
-    "lint-staged": "lint-staged"
+    "lint-staged": "lint-staged",
+    "prisma:generate": "prisma generate"
   },
   "prisma": {
     "seed": "node --loader ts-node/esm prisma/seed.ts"
