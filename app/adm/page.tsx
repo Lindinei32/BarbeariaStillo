@@ -47,7 +47,7 @@ export default function AdmPage() {
     if (!confirm('Tem certeza que deseja limpar os horários?')) return
 
     setIsSubmitting(true)
-    toast.loading('Limpando horários...')
+    const toastId = toast.loading('Limpando horários...')
     try {
       await clearBarbershopHours(barbershop.id)
 
@@ -56,8 +56,10 @@ export default function AdmPage() {
 
       router.refresh() // 2. Dispara a atualização de outras páginas
 
+      toast.dismiss(toastId)
       toast.success('Horários limpos com sucesso!')
     } catch (error) {
+      toast.dismiss(toastId)
       toast.error('Falha ao limpar os horários.')
     } finally {
       setIsSubmitting(false)
@@ -70,7 +72,7 @@ export default function AdmPage() {
       if (isSubmitting) return
 
       setIsSubmitting(true)
-      toast.loading('Salvando horários...')
+      const toastId = toast.loading('Salvando horários...')
       const formData = new FormData(event.currentTarget)
 
       try {
@@ -81,8 +83,10 @@ export default function AdmPage() {
 
         router.refresh() // 2. Dispara a atualização de outras páginas
 
+        toast.dismiss(toastId)
         toast.success('Horários salvos com sucesso!')
       } catch (error) {
+        toast.dismiss(toastId)
         toast.error('Falha ao salvar os horários.')
       } finally {
         setIsSubmitting(false)

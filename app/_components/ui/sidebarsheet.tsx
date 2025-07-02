@@ -22,7 +22,7 @@ import React from "react"
 const SidebarSheet = () => {
   const { data } = useSession()
 
-  const handleLogoutClick = () => signOut()
+  const handleLogoutClick = () => signOut({ callbackUrl: '/' })
 
   return (
     <Sheet>
