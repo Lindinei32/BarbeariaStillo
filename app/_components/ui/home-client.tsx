@@ -23,10 +23,6 @@ export default function HomeClient() {
     return null
   }
 
-  if (!data.openingTime || !data.closingTime) {
-    return null
-  }
-
   return data.openingTime && data.closingTime ? (
     <div className="mt-6">
       <div className="rounded-lg border border-primary bg-card p-3 text-center shadow-md">
