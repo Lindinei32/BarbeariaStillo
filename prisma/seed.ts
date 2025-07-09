@@ -15,15 +15,22 @@ async function seedDatabase() {
     // Apaga os serviços existentes para evitar duplicatas e problemas de ordem
     await prisma.barbershopService.deleteMany({})
     console.log('Serviços antigos apagados.')
+
+    // LINHA ADICIONADA: Apaga os admins antigos para evitar duplicatas
+    await prisma.admin.deleteMany({})
+    console.log('Admins antigos apagados.')
     // =================================================================
 
     // 1. Garante que o Admin exista (Upsert é "update or insert")
-    const adminEmail = 'stillobarbearia99@gmail.com'
+    // <<< CÓDIGO CORRETO (SUAS MUDANÇAS) FOI MANTIDO AQUI
+    const adminEmail = 'osiaslopes23@gmail.com' // <--- EMAIL MUDADO
     await prisma.admin.upsert({
       where: { email: adminEmail },
-      update: {}, // Não precisa atualizar nada se já existir
+      update: {
+        name: 'Osias', // Garante que o nome seja atualizado se o e-mail já existir
+      },
       create: {
-        name: 'Barbearia Stillo',
+        name: 'Osias', // <--- NOME MUDADO
         email: adminEmail,
         role: 'admin',
       },
