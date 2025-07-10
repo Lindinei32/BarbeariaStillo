@@ -1,29 +1,26 @@
+// app/_lib/auth.ts
+
 import { PrismaAdapter } from "@auth/prisma-adapter"
-import {
-  AuthOptions,
-  DefaultSession,
-  Session as NextAuthSession,
-  User as NextAuthUser,
-} from "next-auth"
+import { AuthOptions } from "next-auth"
 import { Adapter } from "next-auth/adapters"
 import GoogleProvider from "next-auth/providers/google"
-import { db } from "./prisma" // Ensure this path is correct
+import { db } from "./prisma"
 
-// Type Augmentation for NextAuth Session and User
+// ===================================================================
+// PASSO 1: CORRIGIR A DECLARAÇÃO DE TIPOS PARA USAR 'isAdmin'
+// ===================================================================
 declare module "next-auth" {
-  interface Session extends DefaultSession {
+  interface Session {
     user: {
       id: string
       name: string
       email: string
       image: string
-      isAdmin?: boolean
-    } & DefaultSession["user"]
+      isAdmin: boolean; // <-- Usando 'isAdmin' que existe no seu DB
+    }
   }
 
-  interface User {
-    id: string // Ensure User type also has id
-  }
+  // Não precisamos mais estender a interface User aqui, pois o Prisma já a define.
 }
 
 export const authOptions: AuthOptions = {
@@ -34,39 +31,27 @@ export const authOptions: AuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
   ],
-  session: {
-    strategy: "database",
-  },
   callbacks: {
-    // Modifies the session object before it's returned to the client
-    async session({
-      session,
-      user,
-    }: {
-      session: NextAuthSession
-      user: NextAuthUser
-    }) {
+    // ===================================================================
+    // PASSO 2: CORRIGIR A LÓGICA DA SESSÃO PARA LER 'isAdmin'
+    // ===================================================================
+    async session({ session, user }) {
       if (session.user) {
-        session.user.id = user.id
-        session.user.name = user.name ?? ""
-        session.user.email = user.email ?? ""
-        session.user.image = user.image ?? ""
-        if (
-          user.name === "Barbearia Stillo" &&
-          user.email === "stillobarbearia99@gmail.com"
-        ) {
-          session.user.isAdmin = true
-        } else {
-          session.user.isAdmin = false
-        }
+        // Buscamos o usuário no nosso banco para pegar a propriedade 'isAdmin'
+        const userFromDb = await db.user.findUnique({
+          where: { id: user.id },
+        });
+
+        // Adicionamos o status 'isAdmin' do banco à sessão
+        session.user.isAdmin = userFromDb?.isAdmin ?? false; // Se não achar, não é admin
+        session.user.id = user.id;
       }
-      return session
+      return session;
     },
   },
 
   secret: process.env.NEXT_AUTH_SECRET!,
 
-  // Custom pages configuration
   pages: {
     signOut: "/",
   },
