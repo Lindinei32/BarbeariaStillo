@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-geist-sans: ${geistSans.variable};
+  --font-geist-mono: ${geistMono.variable};
+  --background: #ffffff; /* Define um fundo padrão claro */
+  --foreground: #000000; /* Define uma cor de texto padrão escura */
+  --text-primary: #A0AEC0; /* Um tom de cinza claro para o texto */
+  --text-title: white;
+  --background-dark: #121212; /* Define a cor de fundo para o tema escuro */
+}
+
+body {
+  font-family: var(--font-geist-sans);
+  background-color: var(--background); /* Usa a variável para o fundo */
+  color: var(--foreground); /* Usa a variável para a cor do texto */
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-geist-mono);
+  font-weight: 700;
+  color: var(--text-title); /* Usa a variável para a cor do título */
+}
+
+/* Tema Escuro (Dark Mode) */
+.dark {
+  --background: var(--background-dark); /* Usa a variável para o fundo escuro */
+  --foreground: #ffffff; /* Define a cor do texto para branco no tema escuro */
+}
+
+/* Você pode adicionar mais estilos conforme necessário */
