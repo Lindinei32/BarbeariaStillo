@@ -7,15 +7,9 @@ import Image from 'next/image'
 import { format, isPast, isToday, set } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { toast } from 'sonner'
-
-// Importando nossa lógica de autenticação customizada
 import { useAuth } from '@/app/_context/AuthContext'
-
-// Importando nossas Server Actions refatoradas
 import { createBooking } from '@/app/_actions/create-booking'
 import { getbookings } from '@/app/_actions/get-bookings'
-
-// Importando componentes de UI
 import { Card, CardContent } from './card'
 import {
   Sheet,
@@ -81,21 +75,17 @@ const getTimeList = (bookings: Booking[], selectedDay: Date): string[] => {
   return TIME_LIST.filter((time) => {
     const [hour, minutes] = time.split(':').map(Number)
     const dateWithTime = set(selectedDay, { hours: hour, minutes })
-
     if (isPast(dateWithTime) && isToday(selectedDay)) return false
     if (isPast(selectedDay) && !isToday(selectedDay)) return false
-
     const hasBookingOnCurrentTime = bookings.some(
       (booking) => new Date(booking.date).getTime() === dateWithTime.getTime(),
     )
-
     return !hasBookingOnCurrentTime
   })
 }
 
 const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
   const { user } = useAuth()
-
   const [selectedDay, setSelectedDay] = useState<Date | undefined>(undefined)
   const [selectedTime, setSelectedTime] = useState<string | undefined>(
     undefined,
@@ -119,7 +109,8 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
           date: selectedDay,
         })
         setDayBookings(bookings)
-      } catch (error) {
+      } catch {
+        // <-- CORREÇÃO APLICADA AQUI
         toast.error('Erro ao carregar horários disponíveis.')
       } finally {
         setIsLoadingTime(false)
@@ -174,9 +165,7 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
       handleCloseAndResetSheet()
       toast.success(
         `Reserva para ${format(bookingDate, "dd/MM 'às' HH:mm", { locale: ptBR })} realizada!`,
-        {
-          style: { color: '#9bfd09' },
-        },
+        { style: { color: '#9bfd09' } },
       )
     } catch (error) {
       toast.error(
@@ -266,7 +255,6 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
                     </div>
                   )}
 
-                  {/* ESTE É O BLOCO DE CÓDIGO QUE GERA O RESUMO */}
                   {selectedDay && selectedTime && (
                     <div className="px-5 pt-3">
                       <Card className="border-2 border-[#844816] bg-[#1A1A1A] text-white">
@@ -279,7 +267,7 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
                           </div>
                           <div className="border-t border-solid border-zinc-700" />
                           <div className="flex justify-between">
-                            <p className="text-sm font-semibold">Data</p>
+                            <p className="text-sm text-gray-400">Data</p>
                             <p className="text-sm font-semibold capitalize">
                               {format(selectedDay, "dd 'de' MMMM", {
                                 locale: ptBR,
@@ -287,13 +275,13 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
                             </p>
                           </div>
                           <div className="flex justify-between">
-                            <p className="text-sm font-semibold">Horário</p>
+                            <p className="text-sm text-gray-400">Horário</p>
                             <p className="text-sm font-semibold">
                               {selectedTime}
                             </p>
                           </div>
                           <div className="flex justify-between">
-                            
+                            <p className="text-sm text-gray-400">Barbearia</p>
                             <p className="text-sm font-semibold">
                               {barbershop.name}
                             </p>
