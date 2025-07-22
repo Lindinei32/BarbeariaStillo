@@ -6,34 +6,24 @@ import { useEffect, useState, useCallback, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-// ===================================================================
-// A CORREÇÃO ESTÁ AQUI: ATUALIZAMOS O CAMINHO DO IMPORT
-// ===================================================================
+// Importando o hook de autenticação do local correto
 import { useAuth } from "@/app/_context/AuthContext";
 
-// IMPORTS DOS COMPONENTES DE UI
+// Importando os componentes de UI
 import Header from "../_components/ui/header";
 import BookingCardAdmin from "../_components/ui/bookingCardAdmin";
 import AdminHoursForm from "../_components/ui/admin-hours-form";
 
-// IMPORTS DAS NOSSAS SERVER ACTIONS
+// Importando as Server Actions e os tipos necessários
 import { getAllAdminBookings, type BookingAdminListData } from "../_actions/get-all-admin-bookings";
 import { getBarbershopData } from "../_actions/get-barbershop-data";
 import { updateBarbershopHours } from "../_actions/update-barbershop-hours";
 import { clearBarbershopHours } from "../_actions/clear-barbershop-hours";
 
-// Definindo o tipo para a barbearia
+// A interface que descreve os dados da barbearia para esta página
 interface BarbershopData {
-  id: string;
-  name: string;
-  address: string;
-  phones: string;
-  description: string;
-  imageUrl: string;
-  openingTime: string | null;
-  closingTime: string | null;
-  createdAt: Date;
-  updatedAt: Date;
+  id: string; name: string; address: string; phones: string; description: string; imageUrl: string;
+  openingTime: string | null; closingTime: string | null; createdAt: Date; updatedAt: Date;
 }
 
 export default function AdmPage() {
@@ -42,27 +32,34 @@ export default function AdmPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Usamos nosso hook do novo local
   const { user, isLoading: isAuthLoading } = useAuth();
   const router = useRouter();
 
-  // O resto do seu componente permanece o mesmo...
+  const fetchAdminBookings = useCallback(async () => {
+    try {
+      const data = await getAllAdminBookings();
+      setBookings(data);
+    } catch (error) {
+      console.error("Erro ao buscar agendamentos de admin:", error);
+      toast.error("Falha ao atualizar a lista de agendamentos.");
+    }
+  }, []);
+
   const fetchPageData = useCallback(async () => {
     setIsLoading(true);
     try {
-      const [barbershopData, bookingsData] = await Promise.all([
+      const [barbershopData] = await Promise.all([
         getBarbershopData(),
-        getAllAdminBookings(),
+        fetchAdminBookings(),
       ]);
       setBarbershop(barbershopData);
-      setBookings(bookingsData);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Erro ao carregar dados do painel.");
       router.replace('/');
     } finally {
       setIsLoading(false);
     }
-  }, [router]);
+  }, [router, fetchAdminBookings]);
 
   const handleClearClick = useCallback(async () => {
     if (isSubmitting || !barbershop) return;
@@ -112,16 +109,29 @@ export default function AdmPage() {
 
   useEffect(() => {
     if (isAuthLoading) return;
-
     if (!user || !user.isAdmin) {
       toast.error("Acesso negado.");
       router.replace('/');
       return;
     }
-
     fetchPageData();
   }, [user, isAuthLoading, router, fetchPageData]);
   
+  // useEffect para implementar o Polling
+  useEffect(() => {
+    if (user?.isAdmin && !isLoading) {
+      // ===================================================================
+      // A ÚNICA MUDANÇA ESTÁ AQUI: ALTERAMOS O INTERVALO
+      // ===================================================================
+      const intervalId = setInterval(() => {
+        console.log("[Admin Polling] Buscando novos agendamentos...");
+        fetchAdminBookings();
+      }, 5000); // <-- Alterado de 15000 (15s) para 5000 (5s)
+
+      return () => clearInterval(intervalId);
+    }
+  }, [user, isLoading, fetchAdminBookings]);
+
 
   if (isAuthLoading || isLoading) {
     return (

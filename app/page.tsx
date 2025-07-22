@@ -1,74 +1,91 @@
 // app/page.tsx
 
-// REMOVEMOS os imports de 'cookies' e 'jwt'
-import Image from 'next/image';
+import Image from 'next/image'
 
-// IMPORTS DE COMPONENTES
-import Header from './_components/ui/header';
-import ServiceItem from './_components/ui/service-item';
-import PhoneItem from './_components/ui/phone-item';
-import ClientBookingList from './_components/ui/client-booking-list';
-import Mediasocial from './_components/ui/mediasocial';
-import BarbershopItem from './_components/ui/barbershop-item';
-import HomeClient from './_components/ui/home-client';
+// Importando os componentes
+import Header from './_components/ui/header'
+import ServiceItem from './_components/ui/service-item'
+import PhoneItem from './_components/ui/phone-item'
+import ClientBookingList from './_components/ui/client-booking-list'
+import Mediasocial from './_components/ui/mediasocial'
+import BarbershopItem from './_components/ui/barbershop-item'
+import HomeClient from './_components/ui/home-client'
+import WelcomeMessage from './_components/ui/welcome-message'
 
+// Importando a conexão com o banco
+import db from './_lib/db'
 
-// IMPORT DA CONEXÃO COM O BANCO
-import db from './_lib/db';
-import WelcomeMessage from './_components/ui/welcome-message';
-
-// TIPAGENS (mantidas para a busca de dados)
+// Definindo os tipos para os dados da página
 interface Service {
-  id: string;
-  name: string;
-  price: string;
-  description: string;
-  imageUrl: string;
+  id: string
+  name: string
+  price: string
+  description: string
+  imageUrl: string
 }
 interface Barbershop {
-  id: string;
-  name: string;
-  address: string;
-  imageUrl: string;
-  services: Service[];
+  id: string
+  name: string
+  address: string
+  imageUrl: string
+  services: Service[]
 }
 
-export const revalidate = 0;
+// Garante que a página seja sempre dinâmica
+export const revalidate = 0
 
 const Home = async () => {
-  // REMOVEMOS toda a lógica de verificação de token daqui.
-  // A página agora foca apenas em buscar os dados que ela precisa (barbearias e serviços).
-  
-  let barbershops: Barbershop[] = [];
+  let barbershops: Barbershop[] = []
 
   try {
+    // A Query SQL que busca barbearias e seus serviços.
+    // O JOIN acontece aqui: b.id (UUID) = s."barbershopId" (deve ser UUID).
     const query = `
       SELECT
-        b.id as "barbershopId", b.name as "barbershopName", b.address, b."imageUrl" as "barbershopImageUrl",
-        s.id as "serviceId", s.name as "serviceName", s.price, s.description as "serviceDescription", s."imageUrl" as "serviceImageUrl"
-      FROM "Barbershop" as b
-      LEFT JOIN "BarbershopService" as s ON b.id = s."barbershopId"
-      ORDER BY b."createdAt" ASC;
-    `;
+        b.id as "barbershopId",
+        b.name as "barbershopName",
+        b.address,
+        b."imageUrl" as "barbershopImageUrl",
+        s.id as "serviceId",
+        s.name as "serviceName",
+        s.price,
+        s.description as "serviceDescription",
+        s."imageUrl" as "serviceImageUrl"
+      FROM
+        "Barbershop" as b
+      LEFT JOIN
+        "BarbershopService" as s ON b.id = s."barbershopId"
+      ORDER BY
+        b."createdAt" ASC;
+    `
     
     const result = await db.query(query);
+
+    // Mapeamento para agrupar os serviços dentro de cada barbearia
     const barbershopsMap = result.rows.reduce((acc, row) => {
       if (!acc[row.barbershopId]) {
         acc[row.barbershopId] = {
-          id: row.barbershopId, name: row.barbershopName, address: row.address,
-          imageUrl: row.barbershopImageUrl, services: [],
+          id: row.barbershopId,
+          name: row.barbershopName,
+          address: row.address,
+          imageUrl: row.barbershopImageUrl,
+          services: [],
         };
       }
       if (row.serviceId) {
         acc[row.barbershopId].services.push({
-          id: row.serviceId, name: row.serviceName, price: row.price,
-          description: row.serviceDescription, imageUrl: row.serviceImageUrl,
+          id: row.serviceId,
+          name: row.serviceName,
+          price: row.price,
+          description: row.serviceDescription,
+          imageUrl: row.serviceImageUrl,
         });
       }
       return acc;
     }, {} as Record<string, Barbershop>);
     
     barbershops = Object.values(barbershopsMap);
+
   } catch (error) {
     console.error('Falha ao buscar dados da página inicial:', error);
   }
@@ -79,8 +96,6 @@ const Home = async () => {
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <Header />
       <div className="flex-1 overflow-y-auto p-5">
-        
-        {/* SUBSTITUÍMOS O BLOCO DE SAUDAÇÃO PELO NOSSO NOVO COMPONENTE */}
         <WelcomeMessage />
 
         <div className="relative mt-6 h-[150px] w-full rounded-xl">
@@ -93,7 +108,7 @@ const Home = async () => {
         <div className="mt-6"><BarbershopItem /></div>
 
         <div className="mt-6">
-          <h2 className="mb-3 uppercase text-[#F5F5F5]">Serviços</h2>
+          <h2 className="mb-3 uppercase text-[#F5F5FS5]">SERVIÇOS</h2>
           {barbershops.map((barbershop) => (
             <div key={barbershop.id} className="space-y-6">
               {barbershop.services.map((service) => (
@@ -104,7 +119,7 @@ const Home = async () => {
         </div>
 
         <div className="mt-6">
-          <h2 className="mb-3 uppercase text-white">Contato</h2>
+          <h2 className="mb-3 uppercase text-white">CONTATO</h2>
           <div className="space-y-3">
             {fixedPhones.map((phone, index) => (<PhoneItem key={index.toString()} phone={phone} />))}
             <Mediasocial />

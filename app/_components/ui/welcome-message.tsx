@@ -27,7 +27,7 @@ const WelcomeMessage = () => {
           // Se 'user' existir (estiver logado)...
           user 
             // ...mostra "Olá, [nome do usuário]!"
-            ? `Olá, ${user.name}!` 
+            ? `Olá, ${user.name} !` 
             // ...senão (se 'user' for null)...
             : 'Olá, Seja Bem-vindo!'
         }

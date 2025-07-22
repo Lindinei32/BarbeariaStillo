@@ -208,7 +208,7 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
           </div>
           <div className="flex w-full flex-col justify-between space-y-2">
             <h3 className="text-lg text-[#FFD700]">{service.name}</h3>
-            <p className="text-sm text-white">{service.description}</p>
+            <p className="text-white">{service.description}</p>
             <div className="flex items-center justify-between">
               <p className="text-lg font-semibold text-[#FFD700]">
                 {formatCurrency(service.price)}
@@ -279,7 +279,7 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
                           </div>
                           <div className="border-t border-solid border-zinc-700" />
                           <div className="flex justify-between">
-                            <p className="text-sm text-gray-400">Data</p>
+                            <p className="text-sm font-semibold">Data</p>
                             <p className="text-sm font-semibold capitalize">
                               {format(selectedDay, "dd 'de' MMMM", {
                                 locale: ptBR,
@@ -287,13 +287,13 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
                             </p>
                           </div>
                           <div className="flex justify-between">
-                            <p className="text-sm text-gray-400">Horário</p>
+                            <p className="text-sm font-semibold">Horário</p>
                             <p className="text-sm font-semibold">
                               {selectedTime}
                             </p>
                           </div>
                           <div className="flex justify-between">
-                            <p className="text-sm text-gray-400">Barbearia</p>
+                            
                             <p className="text-sm font-semibold">
                               {barbershop.name}
                             </p>

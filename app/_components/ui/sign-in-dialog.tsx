@@ -67,7 +67,7 @@ const SignInDialog = ({ onLoginSuccess }: SignInDialogProps) => {
     <form onSubmit={handleSubmit} className="flex flex-col items-center justify-center rounded-lg border-2 border-[#FFD700] bg-[#121212] p-5 text-white">
       <DialogHeader className="w-full text-center">
         <DialogTitle>Faça seu Login</DialogTitle>
-        <DialogDescription>
+        <DialogDescription className="font-semibold">
           Acesse sua conta com nome de usuário e senha.
         </DialogDescription>
       </DialogHeader>
@@ -97,17 +97,17 @@ const SignInDialog = ({ onLoginSuccess }: SignInDialogProps) => {
 
       <Button
         type="submit"
-        className="mt-5 w-full border-2 border-[#221d3d] bg-[#9c6a1c] hover:bg-[#b5812e]"
+        className="mt-5 w-full border-2 border-[#221d3d] bg-[#9c6a1c] hover:bg-[#b5812e] font-bold"
         disabled={isLoading}
       >
         {isLoading ? "Entrando..." : "Entrar"}
       </Button>
 
-      <div className="mt-4 flex w-full justify-between text-xs">
-        <Link href="/register" className="text-gray-400 hover:underline">
+      <div className="mt-4 flex w-full justify-between text-xs font-bold">
+        <Link href="/register" className=" hover:underline">
           Faça seu Cadastro
         </Link>
-        <Link href="/forgot-password" className="text-gray-400 hover:underline">
+        <Link href="/forgot-password" className="hover:underline font-bold">
           Esqueci minha Senha
         </Link>
       </div>
