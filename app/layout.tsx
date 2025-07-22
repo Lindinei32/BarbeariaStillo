@@ -1,15 +1,12 @@
 // app/layout.tsx
 
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter } from 'next/font/google' // Supondo que você use a fonte Inter
 import './globals.css'
 
-// ===================================================================
-// CORREÇÃO APLICADA AQUI: usamos o atalho '@/' que aponta para a pasta 'app'
-// ===================================================================
-import { AuthProvider } from '@/app/_context/AuthContext'
-import { Toaster } from '@/app/_components/ui/sonner'
-import Footer from '@/app/_components/ui/footer'
+import { AuthProvider } from './_context/AuthContext'
+import { Toaster } from './_components/ui/sonner'
+import Footer from './_components/ui/footer' // Garanta que o footer seja importado
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -24,11 +21,15 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    // Recomendo remover a classe 'dark' daqui se você já a tem no <body>
     <html lang="pt-br" className="dark">
-      <body className={`${inter.className} dark bg-background`}>
+      {/* =================================================================== */}
+      {/* A CORREÇÃO ESTÁ AQUI: Restauramos as classes e o estilo do body   */}
+      {/* =================================================================== */}
+      <body
+        className={`${inter.className} dark flex min-h-screen flex-col bg-[#1A1A1A] text-gray-300`}
+        suppressHydrationWarning>
         <AuthProvider>
-          <div className="flex flex-grow flex-col">{children}</div>
+          <div className="flex-grow">{children}</div>
           <Toaster />
           <Footer />
         </AuthProvider>
