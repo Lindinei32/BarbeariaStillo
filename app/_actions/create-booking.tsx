@@ -85,17 +85,12 @@ export const createBooking = async (
     revalidatePath('/bookings')
 
     return newBooking
-
-    // ===================================================================
-    // CORREÇÃO FINAL E ROBUSTA DO CATCH
-    // ===================================================================
   } catch (error) {
     console.error(
       `[Action createBooking] ERRO DETALHADO ao criar reserva para User ID ${userId}:`,
       error,
     )
 
-    // Agora usamos a mensagem do erro original, tornando o uso de 'error' explícito
     if (error instanceof Error) {
       throw new Error(error.message)
     }

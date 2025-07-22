@@ -21,10 +21,8 @@ export async function POST(req: Request) {
       )
     }
 
-    // Verificação preventiva de nome de usuário
     const userCheckQuery = 'SELECT id FROM "User" WHERE LOWER(name) = LOWER($1)'
     const existingUser = await db.query(userCheckQuery, [name])
-
     if (existingUser.rows.length > 0) {
       return NextResponse.json(
         {
@@ -35,7 +33,6 @@ export async function POST(req: Request) {
       )
     }
 
-    // Verificação para e-mail duplicado
     if (email) {
       const emailCheckQuery = 'SELECT id FROM "User" WHERE email = $1'
       const existingEmail = await db.query(emailCheckQuery, [email])
@@ -47,7 +44,6 @@ export async function POST(req: Request) {
       }
     }
 
-    // Criação do usuário
     const salt = await bcrypt.genSalt(10)
     const password_hash = await bcrypt.hash(password, salt)
     const emailToSave = email || null
@@ -63,11 +59,32 @@ export async function POST(req: Request) {
       { message: 'Usuário cadastrado com sucesso!' },
       { status: 201 },
     )
+  } catch (error: unknown) {
+    // <-- CORREÇÃO APLICADA AQUI
+    // Verificação de tipo para acessar as propriedades do erro com segurança
+    if (
+      typeof error === 'object' &&
+      error !== null &&
+      'code' in error &&
+      'constraint' in error
+    ) {
+      const dbError = error as { code: string; constraint: string }
+      if (dbError.code === '23505') {
+        if (dbError.constraint === 'user_name_unique') {
+          return NextResponse.json(
+            { message: 'Este nome de usuário já está em uso.' },
+            { status: 409 },
+          )
+        }
+        if (dbError.constraint === 'User_email_key') {
+          return NextResponse.json(
+            { message: 'Este e-mail já está cadastrado.' },
+            { status: 409 },
+          )
+        }
+      }
+    }
 
-    // ===================================================================
-    // CORREÇÃO APLICADA AQUI: removemos o ': any'
-    // ===================================================================
-  } catch (error) {
     console.error('Erro na API de registro:', error)
     return NextResponse.json(
       { message: 'Erro interno do servidor ao registrar.' },
